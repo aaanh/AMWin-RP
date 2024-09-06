@@ -22,6 +22,8 @@ namespace AMWin_RichPresence {
         private AppleMusicListenBrainzScrobbler listenBrainzScrobblerClient;
         private Logger? logger;
 
+        private AgnosticHttpClient agnosticHttpClient;
+
         public LastFmCredentials lastFmCredentials {
             get {
                 var creds = new LastFmCredentials();
@@ -90,6 +92,9 @@ namespace AMWin_RichPresence {
             // start Apple Music scraper
             var lastFMApiKey = AMWin_RichPresence.Properties.Settings.Default.LastfmAPIKey;
 
+            // start http client
+            agnosticHttpClient = new();
+
             if (lastFMApiKey == null || lastFMApiKey == "") {
                 logger?.Log("No Last.FM API key found");
             }
@@ -116,6 +121,8 @@ namespace AMWin_RichPresence {
                     if (AMWin_RichPresence.Properties.Settings.Default.ListenBrainzEnable) {
                         listenBrainzScrobblerClient.Scrobbleit(newInfo);
                     }
+
+                    agnosticHttpClient.UpdateNowPlaying(newInfo);
                 } else {
                     discordClient.Disable();
                 }
