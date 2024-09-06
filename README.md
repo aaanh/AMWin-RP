@@ -1,3 +1,20 @@
+> [!IMPORTANT]
+> This fork implements a basic HTTP client that makes POST requests to any HTTP server with the Apple Music Information payload.
+> After which the world is thy playground:
+> - broadcast it through WebSockets
+> - Web Streams API
+> - cache it on a KV database
+> - etc.
+> Finally, have a HTTP frontend client queries/makes connection with those data channels. Bam! Bob's your uncle.
+
+# How to build (because the original repo doesn't have the instructions)
+
+- Install Visual Studio >= 17
+- Install the C# desktop development workloads from the installer
+- Add https://api.nuget.org/v3/index.json as the NuGet package source
+- Restore NuGet packages (or probably just run the Debug config is enough)
+- The agnostic HTTP endpoint is currently hard-coded in the `AgnosticHttpClient.cs` -- change this to whatever server handling your payload
+
 # AMWin-RP
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/downloads-pre/PKBeam/AMWin-RP/total) ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/downloads-pre/PKBeam/AMWin-RP/latest/total)  
 
