@@ -6,6 +6,8 @@
 > - cache it on a KV database
 > - etc.
 > Finally, have a HTTP frontend client queries/makes connection with those data channels. Bam! Bob's your uncle.
+>
+> Granted, a lot of more work should be done so that the implementation follows good practices and software pattern
 
 # How to build (because the original repo doesn't have the instructions)
 
