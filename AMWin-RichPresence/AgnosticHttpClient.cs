@@ -11,8 +11,8 @@ using Windows.Web.Http;
 
 internal class AgnosticHttpClient
 {
-	//readonly private Uri webServer = new Uri("http://localhost:3000/api/v1/apple-music");
-	readonly private Uri webServer = new Uri("https://aaanh.com/api/v1/apple-music");
+	readonly private Uri webServer = new Uri("http://localhost:3000/api/v1/apple-music");
+	//readonly private Uri webServer = new Uri("https://aaanh.com/api/v1/apple-music");
 
 
 	/**
@@ -22,8 +22,9 @@ internal class AgnosticHttpClient
 	private string albumTitle;
 	private string artist;
 	private string albumCoverUrl;
+	readonly private string endpointKey = "";
 
-	int maxStringLength = 127;
+    int maxStringLength = 127;
 
 	private string TrimString(string str)
 	{
@@ -72,7 +73,8 @@ internal class AgnosticHttpClient
 				  this.title,
 				  this.albumTitle,
 				  this.artist,
-				  this.albumCoverUrl
+				  this.albumCoverUrl,
+				  endpointKey
 			  }),
 			  Windows.Storage.Streams.UnicodeEncoding.Utf8,
 			  "application/json");
