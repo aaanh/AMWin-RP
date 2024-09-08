@@ -9,6 +9,9 @@
 >
 > Granted, a lot of more work should be done so that the implementation follows good practices and software pattern
 
+> [!NOTE]
+> The primary branch of this fork is `http-client`. The `master` branch is synced with upstream and then rebased onto `http-client`.
+
 # How to build (because the original repo doesn't have the instructions)
 
 - Install Visual Studio >= 17
