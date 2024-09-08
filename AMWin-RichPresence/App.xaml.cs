@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Policy;
 using System.Text.Json;
@@ -44,7 +45,6 @@ namespace AMWin_RichPresence {
         }
 
         public App() {
-
             // make logger
             try {
                 logger = new Logger();
@@ -93,7 +93,7 @@ namespace AMWin_RichPresence {
             var lastFMApiKey = AMWin_RichPresence.Properties.Settings.Default.LastfmAPIKey;
 
             // start http client
-            agnosticHttpClient = new();
+            agnosticHttpClient = new(logger: logger);
 
             if (lastFMApiKey == null || lastFMApiKey == "") {
                 logger?.Log("No Last.FM API key found");

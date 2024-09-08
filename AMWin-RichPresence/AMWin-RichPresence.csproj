@@ -18,6 +18,14 @@
     <None Remove="Resources\AMWinRP.ico" />
   </ItemGroup>
 
+	<ItemGroup>
+		<EnvFile Include=".env.local" />
+	</ItemGroup>
+
+	<Target Name="CopyEnvFile" AfterTargets="AfterBuild">
+		<Copy SourceFiles="@(EnvFile)" DestinationFolder="$(OutDir)"></Copy>
+	</Target>
+
   <ItemGroup>
     <PackageReference Include="DiscordRichPresence" Version="1.3.0.28" />
     <PackageReference Include="FlaUI.UIA3" Version="4.0.0" />

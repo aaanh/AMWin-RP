@@ -7,14 +7,12 @@ using System.Text.Json;
 using System.Data;
 using System.Net.Http.Json;
 using Windows.Web.Http;
+using System.IO;
 
 
 internal class AgnosticHttpClient
 {
-	readonly private Uri webServer = new Uri("http://localhost:3000/api/v1/apple-music");
-	//readonly private Uri webServer = new Uri("https://aaanh.com/api/v1/apple-music");
-
-
+	
 	/**
 	 * Fields to send to HTTP server
 	 */
@@ -22,7 +20,10 @@ internal class AgnosticHttpClient
 	private string albumTitle;
 	private string artist;
 	private string albumCoverUrl;
-	readonly private string endpointKey = "";
+    private string endpointKey = "";
+	private Uri webServer;
+	private Logger? logger;
+
 
     int maxStringLength = 127;
 
@@ -31,7 +32,7 @@ internal class AgnosticHttpClient
 		return str.Length > maxStringLength ? str.Substring(0, maxStringLength - 1) : str;
 	}
 
-	private string GetTrimmedArtistList(AppleMusicInfo amInfo)
+    static private string GetTrimmedArtistList(AppleMusicInfo amInfo)
 	{
 		if (amInfo.ArtistList?.Count > 1)
 		{
@@ -43,24 +44,28 @@ internal class AgnosticHttpClient
 		}
 	}
 
-	public AgnosticHttpClient()
+	public AgnosticHttpClient(Logger? logger)
 	{
-		this.title = "";
+        // load env
+        var rootDir = Directory.GetCurrentDirectory();
+        var dotenvPath = Path.Combine(rootDir, ".env.local");
+        DotEnvLoader.Load(dotenvPath);
+
+		this.endpointKey = Environment.GetEnvironmentVariable("HTTP_SERVER_ENDPOINT_KEY") ?? "";
+		this.webServer = new Uri(Environment.GetEnvironmentVariable("HTTP_SERVER_ENDPOINT_URL") ?? "http://localhost:3000/api/v1/apple-music");
+
+		// logger
+		this.logger = logger;
+
+        this.title = "";
 		this.albumTitle = "";
 		this.artist = "";
 		this.albumCoverUrl = "";
 	}
 
-	public AgnosticHttpClient(AppleMusicInfo amInfo)
-	{
-		this.title = TrimString(amInfo.SongName);
-		this.artist = amInfo.SongArtist.Length > maxStringLength ? GetTrimmedArtistList(amInfo) : amInfo.SongArtist;
-		this.albumTitle = TrimString(amInfo.SongAlbum);
-		this.albumCoverUrl = amInfo.CoverArtUrl ?? Constants.DiscordAppleMusicImageKey;
-	}
 	public async void UpdateNowPlaying(AppleMusicInfo amInfo)
 	{
-		var httpClient = new Windows.Web.Http.HttpClient();
+        var httpClient = new Windows.Web.Http.HttpClient();
 
 		this.title = TrimString(amInfo.SongName);
 		this.artist = amInfo.SongArtist.Length > maxStringLength ? GetTrimmedArtistList(amInfo) : amInfo.SongArtist;
@@ -79,7 +84,17 @@ internal class AgnosticHttpClient
 			  Windows.Storage.Streams.UnicodeEncoding.Utf8,
 			  "application/json");
 
-		using Windows.Web.Http.HttpResponseMessage response = await httpClient.PostAsync(this.webServer, jsonContent);
-		response.EnsureSuccessStatusCode();
-	}
+		try
+		{
+			using Windows.Web.Http.HttpResponseMessage response = await httpClient.PostAsync(this.webServer, jsonContent);
+			response.EnsureSuccessStatusCode();
+		}
+		catch (Exception ex)
+		{
+			this.logger?.Log("HTTP Server is set to (app): " + this.webServer.ToString() +"\n");
+			this.logger?.Log("HTTP Server is set to (host): " + Environment.GetEnvironmentVariable("HTTP_SERVER_ENDPOINT_URL") + "\n");
+            this.logger?.Log(ex.ToString());
+
+        }
+    }
 }
