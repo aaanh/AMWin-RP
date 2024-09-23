@@ -83,8 +83,7 @@ internal class AppleMusicDiscordClient {
                 Assets = new Assets() {
                     LargeImageKey = (showBigImage ? amInfo.CoverArtUrl : null) ?? Constants.DiscordAppleMusicImageKey,
                     LargeImageText = songAlbum
-                },
-                Type = ActivityType.Listening,
+                }
             };
             
             if (amInfo.SongUrl != null) {
